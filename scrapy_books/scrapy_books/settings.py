@@ -58,9 +58,12 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "scrapy_books.pipelines.ScrapyBooksPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "scrapy_books.pipelines.CleanTextPipeline": 200,
+    "scrapy_books.pipelines.AvailabilityPipeline": 300,
+    "scrapy_books.pipelines.ConvertRatingPipeline": 400,
+    "scrapy_books.pipelines.SavingToPostgresPipeline": 500,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
