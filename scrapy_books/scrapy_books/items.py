@@ -6,7 +6,12 @@
 import scrapy
 
 
-class ScrapyBooksItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class BooksInformations(scrapy.Item):
+    title = scrapy.Field()
+    price = scrapy.Field()
+    availability = scrapy.Field()
+    stock_count = scrapy.Field()
+    description = scrapy.Field()
+    category = scrapy.Field()
+    rating = scrapy.Field()
+    upc = scrapy.Field()
