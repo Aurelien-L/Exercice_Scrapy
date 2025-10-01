@@ -1,10 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-
-# ----------------------
-# Category Schemas
-# ----------------------
 class Category(BaseModel):
     id: int
     name: str
@@ -13,9 +9,6 @@ class Category(BaseModel):
         orm_mode = True
 
 
-# ----------------------
-# Stock Schemas
-# ----------------------
 class Stock(BaseModel):
     id: int
     price: Optional[float] = None
@@ -26,9 +19,6 @@ class Stock(BaseModel):
         orm_mode = True
 
 
-# ----------------------
-# Book Schemas
-# ----------------------
 class Book(BaseModel):
     id: int
     upc: str
