@@ -26,3 +26,4 @@ class Book(BaseModel):
     stock: Optional[Stock] = None
 
     model_config = {"from_attributes": True}
+    

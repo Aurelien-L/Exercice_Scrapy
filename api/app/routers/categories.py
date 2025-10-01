@@ -8,4 +8,7 @@ router = APIRouter(prefix="/categories", tags=["categories"])
 
 @router.get("/", response_model=list[schemas.Category])
 def list_categories(db: Session = Depends(get_db)):
+    """
+    Returns a list of all categories in the database.
+    """
     return crud.get_categories(db)
