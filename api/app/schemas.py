@@ -4,9 +4,7 @@ from typing import Optional
 class Category(BaseModel):
     id: int
     name: str
-
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class Stock(BaseModel):
@@ -14,9 +12,7 @@ class Stock(BaseModel):
     price: Optional[float] = None
     availability: Optional[str] = None
     stock_count: Optional[int] = 0
-
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class Book(BaseModel):
@@ -29,5 +25,4 @@ class Book(BaseModel):
     category: Optional[Category] = None
     stock: Optional[Stock] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
