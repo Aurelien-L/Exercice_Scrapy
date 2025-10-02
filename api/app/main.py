@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from app.routers import books, categories, stats
+from api.app.routers import books, categories, stats
 
 
 app = FastAPI(title="Scraped books API", version="1.0.0")

@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
+
 import scrapy
 from scrapy_books.items import BooksInformations
 from scrapy_books.itemloaders import BooksInformationsLoader
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class BooksSpider(scrapy.Spider):
     name = "booksspider"
     allowed_domains = ["books.toscrape.com"]
-    start_urls = ["https://books.toscrape.com/index.html"]
+    start_urls = [os.getenv("START_URL")]
 
     def parse(self, response):        
         """

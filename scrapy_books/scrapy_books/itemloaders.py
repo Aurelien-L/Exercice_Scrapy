@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from scrapy.loader import ItemLoader
 from itemloaders.processors import MapCompose, TakeFirst
 
