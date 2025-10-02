@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
@@ -8,6 +10,10 @@
 from itemadapter import ItemAdapter
 import re
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class ScrapyBooksPipeline:
@@ -90,23 +96,20 @@ class SavingToPostgresPipeline(object):
         Create a connection to the PostgreSQL database.
         The connection and cursor are stored as instance variables self.conn and self.cur respectively.
         """
-        self.conn = psycopg2.connect(
-            host = 'localhost',
-            user = 'postgres',
-            password = 'deviabdd',
-            dbname = 'books',
-            port = '5432'
-        )
-        self.cur = self.conn.cursor()
+        load_dotenv()
 
-    
-    def close_connection(self, spider):
-        """
-        Close the connection to the PostgreSQL database after the spider has finished its work.
-        """
-        self.conn.commit()
-        self.cur.close()
-        self.conn.close()
+        try:
+            self.conn = psycopg2.connect(
+                host=os.getenv("HOST"),
+                database=os.getenv("DBNAME"),
+                user=os.getenv("USER"),
+                password=os.getenv("PASSWORD"),
+                port=os.getenv("PORT")
+            )
+            self.cur = self.conn.cursor()
+        except Exception as e:
+            print(f"Error connecting to database: {str(e)}")
+            raise e
 
 
     def process_item(self, item, spider):
@@ -128,42 +131,56 @@ class SavingToPostgresPipeline(object):
         Finally, the item is inserted into the stocks table with the
         id of the book in the books table.
         """
-        self.cur.execute("""
-            INSERT INTO categories (name) VALUES (%s)
-            ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
-            RETURNING id
-        """, (item['category'],))
-        category_id = self.cur.fetchone()[0]
+        try:
+            self.cur.execute("""
+                INSERT INTO categories (name) VALUES (%s)
+                ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+                RETURNING id
+            """, (item['category'],))
+            category_id = self.cur.fetchone()[0]
 
-        description = item.get("description", "")
-        self.cur.execute("""
-            INSERT INTO books (upc, title, description, category_id, rating)
-            VALUES (%s, %s, %s, %s, %s)
-            ON CONFLICT (upc) DO UPDATE SET
-                title = EXCLUDED.title,
-                description = EXCLUDED.description,
-                category_id = EXCLUDED.category_id,
-                rating = EXCLUDED.rating
-            RETURNING id
-        """,  (
-                item.get("upc", ""),
-                item.get("title", "Unknown"),
-                description,
-                category_id,
-                item.get("rating", 0)
+            description = item.get("description", "")
+            self.cur.execute("""
+                INSERT INTO books (upc, title, description, category_id, rating)
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (upc) DO UPDATE SET
+                    title = EXCLUDED.title,
+                    description = EXCLUDED.description,
+                    category_id = EXCLUDED.category_id,
+                    rating = EXCLUDED.rating
+                RETURNING id
+            """,  (
+                    item.get("upc", ""),
+                    item.get("title", "Unknown"),
+                    description,
+                    category_id,
+                    item.get("rating", 0)
+                ))
+            book_id = self.cur.fetchone()[0]
+
+            self.cur.execute("""
+                INSERT INTO stocks (book_id, price, availability, stock_count)
+                VALUES (%s, %s, %s, %s)
+            """, (
+                book_id,
+                item['price'],
+                item['availability'],
+                item['stock_count']
             ))
-        book_id = self.cur.fetchone()[0]
 
-        self.cur.execute("""
-            INSERT INTO stocks (book_id, price, availability, stock_count)
-            VALUES (%s, %s, %s, %s)
-        """, (
-            book_id,
-            item['price'],
-            item['availability'],
-            item['stock_count']
-        ))
+            self.conn.commit()
+        
+        except Exception as e:
+            print(f"❌ Error saving item: {str(e)}")
+            self.conn.rollback()
 
-        self.conn.commit()
         return item
+    
+
+    def close_connection(self, spider):
+        """
+        Close the connection to the PostgreSQL database after the spider has finished its work.
+        """
+        self.cur.close()
+        self.conn.close()
     

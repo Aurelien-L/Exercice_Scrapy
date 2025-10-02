@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import Column, Integer, Text, Numeric, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from .database import Base
 
 
 class Category(Base):
