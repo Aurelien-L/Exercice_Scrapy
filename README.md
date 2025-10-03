@@ -104,6 +104,10 @@ Cette commande va :
 - `GET /categories/...` : Informations sur les catégories
 - `GET /stats/...` : Informations statistiques
 
+## 💾 Schéma de la base de données
+
+![schema_bdd](img/schema.png)  
+
 ## 📝 Licence
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
