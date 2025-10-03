@@ -78,7 +78,7 @@ pip install -r requirements.txt
 
 4. **Configurer les variables d'environnement**  
 Créer un fichier `.env` à la racine du projet en suivant la structure du  `.env.example`.  
-Utiliser le START_URL *all pages* pour extraire la totalité des livres du site, ou l'autre lien pour faire un test avec les deux dernières pages uniquement.
+Utiliser le `START_URL` *all pages* pour extraire la totalité des livres du site, ou l'autre lien pour faire un test avec les deux dernières pages uniquement.
 
 ## 🎯 Utilisation
 
