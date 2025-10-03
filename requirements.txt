@@ -1,0 +1,7 @@
+scrapy
+fastapi
+uvicorn
+psycopg2
+sqlalchemy
+dotenv
+pandas
